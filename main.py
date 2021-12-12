@@ -9,7 +9,7 @@ open_x = 0
 open_y= 0
 
 field_list = [['['+str(i)+']['+str(j)+']' for i in range(field_x+2)] for j in range(field_y+2)] # 配列を作成
-field_show = [['■' for i in range(field_x)] for j in range(field_y)] # 配列を作成
+field_show = [['■' for i in range(field_x)] for j in range(field_y)] # 表示させる盤面を作成
 
 
 def count_bomb(x,y):
@@ -17,13 +17,11 @@ def count_bomb(x,y):
     for i in range(-1,2):
         for j in range(-1,2):
             if (x+i)>1 and (y+j)>1 and (x+i)<field_x and (y+j)<field_y:
-                # print(field_list[x+i][y+j])
                 if field_list[x+i][y+j] == 'bomb':
                     bomb_exist = bomb_exist + 1
     field_list[x][y] = bomb_exist
-    # print("bombexist",bomb_exist)
     if bomb_exist == 0:
-        field_show[x-1][y-1] = '□'
+        field_show[x-1][y-1] = ' '
         for i in range(-1,2):
             for j in range(-1,2):
                 if (x+i)>=1 and (y+j)>=1 and (x+i)<=field_x and (y+j)<=field_y:
@@ -61,22 +59,11 @@ def check_bomb(open_x,open_y):
     else:
         count_bomb(open_x,open_y)
 
-def isArray(x,y):
-    return True
-
 
 print("💣マインスイーパー💣")
-# components.display(field_list,field_y+2)
 components.display(field_show,field_y)
 
 open_x, open_y = check_input()
-
-# # 非武装地帯の決定
-# for i in range(-1,2):
-#     for j in range(-1,2):
-#         if (open_x+i)>1 and (open_y+j)>1 and (open_x+i)<field_x and (open_y+j)<field_y:
-                
-#                 print(field_list[open_x+i][open_y+j])
 
 # 盤面のセット
 for i in range(1,field_x):
@@ -95,14 +82,14 @@ for i in range(1,field_x):
         field_list[i][j] = tmp
 field_list[1][1] = field_list[open_x][open_y]
 
-field_list[open_x][open_y] = 'DMZ0'
+field_list[open_x][open_y] = '0000'
 
 # ゲームの開始
 play = True
 while play:
-    # components.display(field_list,field_y+2)
     paly = check_bomb(open_x,open_y)
     components.display(field_show,field_y)
+    print(field_show)
     open_x, open_y = check_input()
     while field_show[open_x][open_y]!='■':
         open_x, open_y = check_input()
