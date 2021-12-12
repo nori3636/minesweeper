@@ -3,7 +3,8 @@ import components
 
 field_x = 10
 field_y = 10
-bombs = 10
+bombs = 10 # 💣の数はfieldx*fieldy-9 以下の値に設定
+
 open_x = 0
 open_y= 0
 
@@ -16,11 +17,11 @@ def count_bomb(x,y):
     for i in range(-1,2):
         for j in range(-1,2):
             if (x+i)>1 and (y+j)>1 and (x+i)<field_x and (y+j)<field_y:
-                print(field_list[x+i][y+j])
-                if field_list[x+i][y+j] == 'bbbb':
+                # print(field_list[x+i][y+j])
+                if field_list[x+i][y+j] == 'bomb':
                     bomb_exist = bomb_exist + 1
     field_list[x][y] = bomb_exist
-    print("bombexist",bomb_exist)
+    # print("bombexist",bomb_exist)
     if bomb_exist == 0:
         field_show[x-1][y-1] = '□'
         for i in range(-1,2):
@@ -29,42 +30,60 @@ def count_bomb(x,y):
                     if field_show[x+i-1][y+j-1] == '■':
                         count_bomb(x+i,y+j)
     else:
-        field_show[x-1][y-1] = bomb_exist
-    
+        field_show[x-1][y-1] = str(bomb_exist)
+
 
 def check_input():
     badinput = True
+    print("空けるマスを入力してください")
     while badinput:
         x = input("field[?][]")
-        if components.check_type(x):
+        if components.check_type(x,field_x):
                 badinput = False        
     badinput = True
     while badinput:
         y = input("field["+x+"][?]")
-        if components.check_type(y):
+        if components.check_type(y,field_y):
                 badinput = False
     open_x = int(x)
     open_y= int(y)
     return open_x, open_y
-    
+
+
 def check_bomb(open_x,open_y):
-    if field_list[open_x][open_y]=='bbbb':
+    if field_list[open_x][open_y]=='bomb':
         print("ゲームオーバー")
+        for i in range(1,field_x):
+            for j in range(1,field_y):
+                if field_list[i][j]=='bomb':
+                    field_show[i-1][j-1] = '💣'
+        components.display(field_show,field_y)
     else:
         count_bomb(open_x,open_y)
 
+def isArray(x,y):
+    return True
+
 
 print("💣マインスイーパー💣")
-components.display(field_list,field_y+2)
+# components.display(field_list,field_y+2)
 components.display(field_show,field_y)
 
 open_x, open_y = check_input()
+
+# # 非武装地帯の決定
+# for i in range(-1,2):
+#     for j in range(-1,2):
+#         if (open_x+i)>1 and (open_y+j)>1 and (open_x+i)<field_x and (open_y+j)<field_y:
+                
+#                 print(field_list[open_x+i][open_y+j])
+
 # 盤面のセット
 for i in range(1,field_x):
     for j in range(1,field_y):
         if bombs < 0:
             break
-        field_list[i][j]= 'bbbb'
+        field_list[i][j]= 'bomb'
         bombs = bombs-1
         x = 1
         y = 1
@@ -76,14 +95,13 @@ for i in range(1,field_x):
         field_list[i][j] = tmp
 field_list[1][1] = field_list[open_x][open_y]
 
-field_list[open_x][open_y] = '0000'
+field_list[open_x][open_y] = 'DMZ0'
 
 # ゲームの開始
-while True:
-    components.display(field_list,field_y+2)
-    print(open_x)
-    print(open_y)
-    check_bomb(open_x,open_y)
+play = True
+while play:
+    # components.display(field_list,field_y+2)
+    paly = check_bomb(open_x,open_y)
     components.display(field_show,field_y)
     open_x, open_y = check_input()
     
