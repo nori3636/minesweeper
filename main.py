@@ -104,6 +104,8 @@ while play:
     paly = check_bomb(open_x,open_y)
     components.display(field_show,field_y)
     open_x, open_y = check_input()
+    while field_show[open_x][open_y]!='■':
+        open_x, open_y = check_input()
     
     
 
